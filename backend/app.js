@@ -56,7 +56,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/v1/app/health", healthRouter);
 app.use("/api/v1/app/auth", authRouter);
 app.use("/api/v1/app/users", isAuthenticated, usersRouter);
-app.use("/api/v1/admin", isAdmin, adminRouter);
+app.use("/api/v1/app/admin", isAdmin, adminRouter);
 app.use("/", indexRouter);
 app.use("/api/v1/app/truck", isAuthenticated, trucksRoutes);
 app.use("/api/v1/app/fuelExpenses", isAuthenticated, fuelExpensesRoutes);

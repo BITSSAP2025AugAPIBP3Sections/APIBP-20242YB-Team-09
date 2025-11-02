@@ -27,6 +27,7 @@ module.exports.signUpWithGoogle = async (req, res) => {
     let user = await User.findOne({ googleId: userId });
 
     const isSubscribed = user ? user.isSubscribed : false;
+    const isAdmin = user ? user.isAdmin : false;
 
     if (!user) {
       // Create a new user if not found
@@ -35,6 +36,7 @@ module.exports.signUpWithGoogle = async (req, res) => {
         email,
         name,
         isSubscribed,
+        isAdmin,
         createdAt: new Date(),
       });
       await user.save();
@@ -47,7 +49,8 @@ module.exports.signUpWithGoogle = async (req, res) => {
         name,
         email,
         picture,
-        isSubscribed
+        isSubscribed,
+        isAdmin
       },
       process.env.SECRETKEY,
       { expiresIn: "7d" }
@@ -55,7 +58,7 @@ module.exports.signUpWithGoogle = async (req, res) => {
 
     // Respond with user data and token
     res.status(200).json({
-      user: { userId, email, picture, name, isSubscribed },
+      user: { userId, email, picture, name, isSubscribed, isAdmin },
       token: jwtToken,
     });
   } catch (error) {
