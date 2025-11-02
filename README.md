@@ -16,7 +16,7 @@ Manage My Truck (MMT) is a comprehensive platform designed to help you manage yo
   - React
   - Redux (for state management)
   - React Router (for navigation)
-  - Bootstrap or Material-UI (for UI components)
+  - Bootstrap / AntDesign
 
 - **Backend:**
   - Node.js
@@ -24,8 +24,8 @@ Manage My Truck (MMT) is a comprehensive platform designed to help you manage yo
   - MongoDB (database)
 
 - **Deployment:**
-  - Docker (optional, for containerization)
-  - Heroku or Vercel (for deployment)
+  - Docker (containerization)
+  - Render / Vercel (for deployment)
 
 ## Installation
 
@@ -37,5 +37,5 @@ Manage My Truck (MMT) is a comprehensive platform designed to help you manage yo
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/manage-my-truck.git
+git clone https://github.com/<yourusername>/manage-my-truck.git
 cd manage-my-truck
