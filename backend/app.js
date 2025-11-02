@@ -1,43 +1,72 @@
 // packages
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const cors = require('cors')
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const cors = require("cors");
+
+require("dotenv").config();
 
 // middleware handlers
-const { error } = require('./utils/error');
-const isAuthenticated = require('./middleware/isAuthenticated');
-const isAdmin = require('./middleware/isAdmin');
+const { error } = require("./utils/error");
+const isAuthenticated = require("./middleware/isAuthenticated");
+const isAdmin = require("./middleware/isAdmin");
 
 // routers
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const authRouter = require('./routes/auth');
-const adminRouter = require('./routes/admin');
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const authRouter = require("./routes/auth");
+const adminRouter = require("./routes/admin");
+const trucksRoutes = require("./routes/trucks");
+const fuelExpensesRoutes = require("./routes/fuelExpenses");
+const defExpensesRoutes = require("./routes/defExpenses");
+const otherExpensesRoutes = require("./routes/otherExpenses");
+const totalExpensesRoutes = require("./routes/totalExpenses");
+const calculateLoanRoutes = require("./routes/calculateLoan");
+const metadata = require("./routes/metadata");
+const healthRouter = require("./routes/health");
 
-// express app
+// express apps
 const app = express();
 
+const allowedOrigins = process.env.CORS_URLS ? process.env.CORS_URLS : [];
+
 // middlewares
-app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-    maxAge: 10000,
-}))
-app.use(logger('dev'));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, origin);
+      } else {
+          callback(new Error("Not allowed by CORS"));
+      }
+  }, // Allow specified domains
+    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow specified headers
+    credentials: true, // Allow credentials
+  })
+);
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 // routes
-app.use('/api/v1/app/auth', authRouter);
-app.use('/api/v1/app/users', isAuthenticated, usersRouter);
-app.use('/api/v1/admin', isAdmin, adminRouter);
-app.use('/', indexRouter);
+app.use("/api/v1/app/health", healthRouter);
+app.use("/api/v1/app/auth", authRouter);
+app.use("/api/v1/app/users", isAuthenticated, usersRouter);
+app.use("/api/v1/admin", isAdmin, adminRouter);
+app.use("/", indexRouter);
+app.use("/api/v1/app/truck", isAuthenticated, trucksRoutes);
+app.use("/api/v1/app/fuelExpenses", isAuthenticated, fuelExpensesRoutes);
+app.use("/api/v1/app/defExpenses", isAuthenticated, defExpensesRoutes);
+app.use("/api/v1/app/otherExpenses", isAuthenticated, otherExpensesRoutes);
+app.use("/api/v1/app/totalExpenses", isAuthenticated, totalExpensesRoutes);
+app.use("/api/v1/app/calculateLoan", isAuthenticated, calculateLoanRoutes);
+app.use("/api/v1/app/metadata", isAuthenticated, metadata);
 
 // error handler
-app.use(error)
+app.use(error);
 
 module.exports = app;
