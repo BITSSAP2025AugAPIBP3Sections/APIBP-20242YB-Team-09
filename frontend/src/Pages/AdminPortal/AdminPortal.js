@@ -100,14 +100,14 @@ export default function AdminPortal() {
       render: (_, record) => {
         if (record.isSubscribed) {
           return (
-            <Button type="primary" danger onClick={() => manageSubscription(record.id)}>
-              Unsubscribe 
+            <Button type="primary" danger style={{width: "100%"}} onClick={() => manageSubscription(record.id)}>
+              Unsubscribe
             </Button>
           );
         } else {
           return (
-            <Button type="primary" onClick={() => manageSubscription(record.id)}>
-              Subscribe 
+            <Button type="primary" style={{width: "100%"}} onClick={() => manageSubscription(record.id)}>
+              Subscribe
             </Button>
           );
         }
