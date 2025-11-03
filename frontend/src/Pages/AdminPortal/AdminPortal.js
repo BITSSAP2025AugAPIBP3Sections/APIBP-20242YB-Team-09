@@ -1,15 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Card, Typography, message, Input, Space } from "antd";
-import axios from "axios";
+import "../../App.css";
+import {
+  Table,
+  Button,
+  Card,
+  Typography,
+  message,
+  Input,
+  Space,
+  Tag,
+  Row,
+  Col,
+  Select,
+  Popconfirm,
+} from "antd";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ReloadOutlined,
+  UserAddOutlined,
+  FilterOutlined,
+} from "@ant-design/icons";
 import { Axios } from "../../Config/Axios/Axios";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
+const { Option } = Select;
 
 export default function AdminPortal() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     fetchUsers();
@@ -17,31 +39,26 @@ export default function AdminPortal() {
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
       const res = await Axios.get("/api/v1/app/admin/getAlluser", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      // Filter out ADMINs
       const filteredUsers = res.data.users.filter((user) => !user.isAdmin);
-
       setUsers(filteredUsers);
     } catch (err) {
       message.error("Failed to fetch users");
-      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const manageSubscription = async (userId) => {
+  const manageSubscription = async (userId, action) => {
     try {
       await Axios.put(
         `/api/v1/app/admin/manageSubscription`,
-        {
-          userId: userId,
-        },
+        { userId },
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -50,111 +67,201 @@ export default function AdminPortal() {
       );
       setUsers((prev) =>
         prev.map((user) =>
-          user.id === userId ? { ...user, isSubscribed: true } : user
+          user.id === userId ? { ...user, isSubscribed: !user.isSubscribed } : user
         )
       );
-      message.success("User subscribtion status updated");
+      message.success(
+        `User successfully ${action === "subscribe" ? "subscribed" : "unsubscribed"}`
+      );
     } catch (err) {
-      message.error("Failed to update subscribtion status");
-      console.error(err);
+      message.error("Failed to update subscription status");
     }
+  };
+
+  const confirmAction = (userId, action) => {
+    manageSubscription(userId, action);
   };
 
   const columns = [
     {
-      title: "Name",
+       title: <div style={{ textAlign: "center" }}>Name</div>,
       dataIndex: "name",
       key: "name",
+      render: (text) => <Text strong>{text}</Text>,
     },
     {
-      title: "Email",
+      title: <div style={{ textAlign: "center" }}>Email</div>,
       dataIndex: "email",
       key: "email",
     },
     {
-      title: "Creation Date",
+      title: <div style={{ textAlign: "center" }}>Created On</div>,
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (date) => date?.split("T")[0],
+      render: (date) => (
+        <Text>
+          {date?.split("T")[0]}{" "}
+          <Text type="secondary">{date?.split("T")[1]?.split(".")[0]}</Text>
+        </Text>
+      ),
     },
     {
-      title: "Creation Time",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (time) => time?.split("T")[1]?.split(".")[0],
-    },
-    {
-      title: "Status",
+      title: <div style={{ textAlign: "center" }}>Status</div>,
       key: "status",
-      render: (_, record) => {
-        if (record.isSubscribed) {
-          return <Text type="success">Subscribed</Text>;
-        } else {
-          return <Text type="danger">Unsubscribed</Text>;
-        }
-      },
+      render: (_, record) =>
+        record.isSubscribed ? (
+          <Tag icon={<CheckCircleOutlined />} style={{width:"100%", textAlign:"center"}} color="success">
+            Subscribed
+          </Tag>
+        ) : (
+          <Tag icon={<CloseCircleOutlined />} style={{width:"100%", textAlign:"center"}} color="error">
+            Unsubscribed
+          </Tag>
+        ),
     },
     {
       title: "Action",
       key: "action",
-      render: (_, record) => {
-        if (record.isSubscribed) {
-          return (
-            <Button type="primary" danger style={{width: "100%"}} onClick={() => manageSubscription(record.id)}>
+      align: "center",
+      render: (_, record) =>
+        record.isSubscribed ? (
+          <Popconfirm
+            title="Are you sure you want to unsubscribe this user?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => confirmAction(record.id, "unsubscribe")}
+            placement="topRight"
+          >
+            <Button type="primary" danger style={{width:"100%"}} icon={<CloseCircleOutlined />}>
               Unsubscribe
             </Button>
-          );
-        } else {
-          return (
-            <Button type="primary" style={{width: "100%"}} onClick={() => manageSubscription(record.id)}>
+          </Popconfirm>
+        ) : (
+          <Popconfirm
+            title="Are you sure you want to subscribe this user?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => confirmAction(record.id, "subscribe")}
+            placement="topRight"
+          >
+            <Button type="primary" style={{width:"100%"}} icon={<UserAddOutlined />}>
               Subscribe
             </Button>
-          );
-        }
-      },
+          </Popconfirm>
+        ),
     },
   ];
 
-  const filteredUsers = users.filter((user) =>
-    user.name?.toLowerCase().includes(searchTerm?.toLowerCase())
-  );
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter =
+      filter === "all"
+        ? true
+        : filter === "subscribed"
+        ? user.isSubscribed
+        : !user.isSubscribed;
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <div
-      className="rounded"
-      style={{
-        padding: "2rem",
-        backgroundColor: "#f0f2f5",
-        minHeight: "100vh",
-      }}
+        style={{
+            minHeight: "100vh",
+            backgroundColor: "#f8f9fa",
+            padding: "3rem 2rem",
+        }}
     >
-      <Card style={{ marginBottom: "2rem" }}>
-        <Title
-          level={2}
-          style={{ textAlign: "center", color: "#1890ff", fontWeight: 800 }}
-        >
-          Admin Dashboard
-        </Title>
+      <Card
+        bordered={false}
+        style={{
+          borderRadius: 16,
+          boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+          marginBottom: "2rem",
+        }}
+      >
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Title
+              level={2}
+              style={{
+                margin: 0,
+                color: "#333",
+                fontWeight: 800,
+                letterSpacing: 0.5,
+              }}
+            >
+              Admin Dashboard
+            </Title>
+            <Text type="secondary">Manage users & subscriptions</Text>
+          </Col>
+          <Col>
+            <Button
+              icon={<ReloadOutlined />}
+              type="default"
+              onClick={fetchUsers}
+              loading={loading}
+            >
+              Refresh
+            </Button>
+          </Col>
+        </Row>
       </Card>
 
-      <Card style={{ marginBottom: "1rem" }}>
-        <Space direction="vertical" style={{ width: "100%" }}>
-          <Search
-            placeholder="Search by name"
-            allowClear
-            enterButton
-            onSearch={(value) => setSearchTerm(value)}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </Space>
+      <Card
+        bordered={false}
+        style={{
+          marginBottom: "1.5rem",
+          borderRadius: 12,
+          boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+        }}
+      >
+        <Row gutter={[16, 16]} align="middle">
+          <Col xs={24} sm={16} md={18} lg={19}>
+            <Search
+              placeholder="Search users by name"
+              allowClear
+              enterButton="Search"
+              size="large"
+              onSearch={(value) => setSearchTerm(value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Col>
+
+          <Col xs={24} sm={8} md={6} lg={5}>
+            <Space style={{ width: "100%" }} align="center">
+              <FilterOutlined style={{ fontSize: 20, color: "#555" }} />
+              <Select
+                size="large"
+                value={filter}
+                onChange={(value) => setFilter(value)}
+                style={{ width: "100%" }}
+              >
+                <Option value="all">All Users</Option>
+                <Option value="subscribed">Subscribed</Option>
+                <Option value="unsubscribed">Unsubscribed</Option>
+              </Select>
+            </Space>
+          </Col>
+        </Row>
       </Card>
 
-      <Card>
+      <Card
+        bordered={false}
+        style={{
+          borderRadius: 12,
+          boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+        }}
+      >
         <Table
+          bordered
           dataSource={filteredUsers.map((user) => ({ ...user, key: user.id }))}
           columns={columns}
           loading={loading}
-          pagination={{ pageSize: 15 }}
+          pagination={{ pageSize: 10 }}
+          rowClassName={(_, index) =>
+            index % 2 === 0 ? "table-row-light" : "table-row-dark"
+          }
+          style={{ background: "white" }}
         />
       </Card>
     </div>
