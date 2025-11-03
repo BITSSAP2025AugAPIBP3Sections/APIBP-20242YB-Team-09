@@ -215,8 +215,8 @@ export default function AdminPortal() {
           boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
         }}
       >
-        <Row gutter={[16, 16]} align="middle">
-          <Col xs={24} sm={16} md={18} lg={19}>
+        <Row gutter={[16, 16]} align="middle" className="w-100">
+          <Col flex="1">
             <Search
               placeholder="Search users by name"
               allowClear
@@ -226,8 +226,7 @@ export default function AdminPortal() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Col>
-
-          <Col xs={24} sm={8} md={6} lg={5}>
+          <Col className="pe-0">
             <Space style={{ width: "100%" }} align="center">
               <FilterOutlined style={{ fontSize: 20, color: "#555" }} />
               <Select
