@@ -34,8 +34,7 @@ const SideBar = ({ navOpen, setNavOpen }) => {
 
     return (
         <div
-            style={{ background: "#f6f6f6", minWidth: "280px" }}
-            className="rounded-4 p-3 pt-4"
+            className="sidebar-container rounded-4 p-3 pt-4"
         >
             {/* Logo */}
             <div className="d-flex gap-2 align-items-center mb-4">
@@ -49,7 +48,9 @@ const SideBar = ({ navOpen, setNavOpen }) => {
                 selectedKeys={[current]}
                 mode="vertical"
                 items={items}
+                className="custom-sidebar-menu"
             />
+
         </div>
     );
 };
