@@ -8,38 +8,41 @@ import {
     TeamOutlined,
     SettingOutlined,
     QuestionCircleOutlined,
-    LogoutOutlined
-  } from "@ant-design/icons";
-  
+    LogoutOutlined,
+    TruckOutlined
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
-const items = [
-{
-    type: "group",
-    label: "MENU",
-    children: [
-        { label: "Dashboard", key: "dashboard", icon: <HomeOutlined /> },
-        { label: "Tasks", key: "tasks", icon: <CheckSquareOutlined /> },
-        { label: "Calendar", key: "calendar", icon: <CalendarOutlined /> },
-        { label: "Analytics", key: "analytics", icon: <BarChartOutlined /> },
-        { label: "Team", key: "team", icon: <TeamOutlined /> }
-    ]
-},
-{
-    type: "group",
-    label: "GENERAL",
-    children: [
-        { label: "Settings", key: "settings", icon: <SettingOutlined /> },
-        { label: "Help", key: "help", icon: <QuestionCircleOutlined /> },
-        { label: "Logout", key: "logout", icon: <LogoutOutlined /> }
-    ]
-}
-];  
-
-const SideBar = ({ navOpen, setNavOpen }) => {
+const SideBar = () => {
     const [current, setCurrent] = useState();
+    const nav = useNavigate();
+
+    const items = [
+        {
+            type: "group",
+            label: "MENU",
+            children: [
+                { label: "Dashboard", key: "dashboard", icon: <HomeOutlined /> },
+                { label: "Trucks", key: "trucks", icon: <TruckOutlined /> },
+                { label: "Tasks", key: "tasks", icon: <CheckSquareOutlined /> },
+                { label: "Calendar", key: "calendar", icon: <CalendarOutlined /> },
+                { label: "Analytics", key: "analytics", icon: <BarChartOutlined /> },
+                { label: "Team", key: "team", icon: <TeamOutlined /> }
+            ]
+        },
+        {
+            type: "group",
+            label: "GENERAL",
+            children: [
+                { label: "Settings", key: "settings", icon: <SettingOutlined /> },
+                { label: "Help", key: "help", icon: <QuestionCircleOutlined /> },
+                { label: "Logout", key: "logout", icon: <LogoutOutlined /> }
+            ]
+        }
+    ];
 
     const onClick = (e) => {
-        console.log("click", e);
+        nav(`/${e.key}`);
         setCurrent(e.key);
     };
 
