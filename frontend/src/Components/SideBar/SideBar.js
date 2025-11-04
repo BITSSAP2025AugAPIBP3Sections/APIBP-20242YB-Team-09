@@ -1,28 +1,39 @@
 import React, { useState } from "react";
 import { Menu } from "antd";
+import {
+    HomeOutlined,
+    CheckSquareOutlined,
+    CalendarOutlined,
+    BarChartOutlined,
+    TeamOutlined,
+    SettingOutlined,
+    QuestionCircleOutlined,
+    LogoutOutlined
+  } from "@ant-design/icons";
+  
 
 const items = [
-    {
-        type: "group",
-        label: "MENU",
-        children: [
-            { label: "Dashboard", key: "nav1:1" },
-            { label: "Tasks", key: "nav1:2" },
-            { label: "Calendar", key: "nav1:3" },
-            { label: "Analytics", key: "nav1:4" },
-            { label: "Team", key: "nav1:5" }
-        ],
-    },
-    {
-        type: "group",
-        label: "GENERAL",
-        children: [
-            { label: "Settings", key: "nav2:1" },
-            { label: "Help", key: "nav2:2" },
-            { label: "Logout", key: "nav2:3" },
-        ],
-    }
-];
+{
+    type: "group",
+    label: "MENU",
+    children: [
+        { label: "Dashboard", key: "dashboard", icon: <HomeOutlined /> },
+        { label: "Tasks", key: "tasks", icon: <CheckSquareOutlined /> },
+        { label: "Calendar", key: "calendar", icon: <CalendarOutlined /> },
+        { label: "Analytics", key: "analytics", icon: <BarChartOutlined /> },
+        { label: "Team", key: "team", icon: <TeamOutlined /> }
+    ]
+},
+{
+    type: "group",
+    label: "GENERAL",
+    children: [
+        { label: "Settings", key: "settings", icon: <SettingOutlined /> },
+        { label: "Help", key: "help", icon: <QuestionCircleOutlined /> },
+        { label: "Logout", key: "logout", icon: <LogoutOutlined /> }
+    ]
+}
+];  
 
 const SideBar = ({ navOpen, setNavOpen }) => {
     const [current, setCurrent] = useState();
