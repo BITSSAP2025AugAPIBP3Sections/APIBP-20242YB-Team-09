@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="frontend/public/mmt_logo.png" alt="Manage My Truck Logo" width="100"/>
+  <img src="frontend/public/favicon.png" alt="Manage My Truck Logo" width="100"/>
 </p>
 
-<h1 align="center">🚛 Manage My Truck</h1>
+<h1 align="center">Manage My Truck</h1>
 
 <p align="center">
   Fleet management platform built with React, Node.js, Express & MongoDB.
@@ -36,14 +36,14 @@
 
 ---
 
-# 🚀 Project Overview
+# Project Overview
 
 **Manage My Truck** is a comprehensive fleet management platform that enables transport businesses to efficiently manage trucks, track expenses, monitor profits, and generate insightful reports.  
 It delivers automation, analytics, and operational control through a clean, intuitive interface.
 
 ---
 
-# 🧩 Features
+# Features
 
 - 🚛 **Fleet Management** – Add, view, and manage trucks & drivers.  
 - 💰 **Expense Tracking** – Log fuel, DEF, and other operational expenses.  
@@ -55,7 +55,7 @@ It delivers automation, analytics, and operational control through a clean, intu
 
 ---
 
-# 🛠️ Tech Stack
+# Tech Stack
 
 | Layer | Technology |
 | :--- | :--- |
@@ -68,38 +68,38 @@ It delivers automation, analytics, and operational control through a clean, intu
 
 ---
 
-# 🔌 API Capabilities
+# API Capabilities
 
-### ✅ **Authentication & Authorization**
+### **Authentication & Authorization**
 - Google OAuth and JWT-based sessions  
 - Role-based access (**Admin / Fleet Manager**)  
 
-### 🚚 **Fleet & Expense Management**
+### **Fleet & Expense Management**
 - Manage trucks, drivers, and various expenses (Fuel, DEF, Other)  
 - Automated profit and salary computation  
 - Loan management  
 
-### 📊 **Analytics & Reporting**
+### **Analytics & Reporting**
 - Real-time dashboard insights  
 - Expense summaries and trends  
 - Export reports to **PDF/CSV**  
 
-### 📧 **Communication & Alerts**
+### **Communication & Alerts**
 - Automated mailing services for alerts and summaries  
 - Configurable dashboard for custom analytics  
 
 ---
 
-# 🔁 REST vs GraphQL Support
+# REST vs GraphQL Support
 
 | **API Type** | **Modules / Usage** |
 |---------------|---------------------|
-| 🧩 **REST APIs** | Authentication & Google OAuth <br> User Management <br> Truck Operations <br> Expense Management <br> Loan Calculations |
-| 🔍 **GraphQL APIs** | Expense Aggregation <br> Analytics Dashboards <br> Admin Insights & Metadata |
+| **REST APIs** | Authentication & Google OAuth <br> User Management <br> Truck Operations <br> Expense Management <br> Loan Calculations |
+| **GraphQL APIs** | Expense Aggregation <br> Analytics Dashboards <br> Admin Insights & Metadata |
 
 ---
 
-# ⚙️ Getting Started
+# Getting Started
 
 Follow these steps to set up the project locally:
 
