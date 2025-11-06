@@ -44,23 +44,40 @@ const SideBar = ({ navOpen, setNavOpen }) => {
     };
 
     return (
-        <div
-            className="sidebar-container rounded-4 p-3 pt-4"
-        >
-            {/* Logo */}
-            <div className="d-flex gap-2 align-items-center mb-4">
-                <img src="favicon.png" alt="Logo" style={{ width: 50, height: 50 }} />
-                <div><b className="fs-8">Manage My Truck</b></div>
+        <div className="sidebar-container rounded-4 p-3 pt-4">
+
+            <div className="sidebar-top">
+                {/* Logo */}
+                <div className="d-flex gap-2 align-items-center mb-4">
+                    <img src="favicon.png" alt="Logo" style={{ width: 50, height: 50 }} />
+                    <div><b className="fs-8">Manage My Truck</b></div>
+                </div>
+
+                {/* Menu */}
+                <Menu
+                    onClick={onClick}
+                    selectedKeys={[current]}
+                    mode="vertical"
+                    items={items}
+                    className="custom-sidebar-menu"
+                />
             </div>
 
-            {/* Menu */}
-            <Menu
-                onClick={onClick}
-                selectedKeys={[current]}
-                mode="vertical"
-                items={items}
-                className="custom-sidebar-menu"
-            />
+            <div className="sidebar-bottom">
+                {/* Contact Card */}
+                <div className="sidebar-contact-card">
+                    <div className="sidebar-contact-overlay"></div>
+
+                    <div className="contact-card-content">
+                        <div className="contact-title">Need Tweaks?</div>
+                        <div className="contact-subtitle">
+                            Reach out to us for customizations or tailored solutions.
+                        </div>
+
+                        <button className="contact-btn">Contact Us</button>
+                    </div>
+                </div>
+            </div>
 
         </div>
     );
