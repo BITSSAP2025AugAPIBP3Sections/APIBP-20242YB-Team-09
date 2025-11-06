@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
-  title: ManageMyTruck (MMT) Backend API
+  title: Manage My Truck (MMT) Backend API
   version: 1.0.0
   description: |
-    🚛 **ManageMyTruck (MMT)** — A unified fleet and expense management system for logistics operators.
+    **Manage My Truck (MMT)** — A unified fleet and expense management system for logistics operators.
 
     This API powers:
     - Truck management
@@ -14,15 +14,16 @@ info:
 
     ---
     **Base URLs**
-    - Local: `http://localhost:8000`
+    - Local  : `http://localhost:8000`
   contact:
     name: APIBP-20242YB-Team-09
+    email: dev.codhub@gmail.com
   license:
-    name: MIT License
-    url: https://opensource.org/licenses/MIT
+    name: README
+    url: https://github.com/BITSSAP2025AugAPIBP3Sections/APIBP-20242YB-Team-09/blob/main/README.md
 
 servers:
-  - url: http://localhost:8000/api
+  - url: http://localhost:8000/api/v1/app
     description: Local development server
 
 components:
@@ -32,7 +33,9 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Enter your JWT token as **Bearer <token>**
+
   schemas:
+    # Common Response Schemas
     SuccessResponse:
       type: object
       properties:
@@ -42,6 +45,10 @@ components:
         status:
           type: boolean
           example: true
+        data:
+          type: object
+          description: Response data (varies by endpoint)
+
     ErrorResponse:
       type: object
       properties:
@@ -51,52 +58,290 @@ components:
         status:
           type: boolean
           example: false
-    Expense:
+        error:
+          type: string
+          description: Detailed error message
+
+    # User Schema
+    User:
       type: object
+      required:
+        - googleId
+        - email
       properties:
-        truckId: { type: string, description: The ID of the truck associated with the expense. }
-        userId: { type: string, description: The ID of the user who added the expense. }
-        amount: { type: number, format: float, example: 125.50 }
-        date: { type: string, format: date, example: "2025-10-26" }
-        notes: { type: string, example: "Regular maintenance fill" }
-        # Add more specific fields if known, e.g., mileage, gallons
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439011
+        googleId:
+          type: string
+          description: Google OAuth ID
+          example: "103547991597142817347"
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        name:
+          type: string
+          example: John Doe
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-01-15T10:30:00Z"
+        isSubscribed:
+          type: boolean
+          default: false
+          example: false
+        isAdmin:
+          type: boolean
+          default: false
+          example: false
+
+    # Truck Schema
+    Truck:
+      type: object
+      required:
+        - addedBy
+        - registrationNo
+      properties:
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439012
+        addedBy:
+          type: string
+          description: User ID who added this truck
+          example: 507f1f77bcf86cd799439011
+        registrationNo:
+          type: string
+          description: Truck registration/license plate number
+          example: TRK-1234-AB
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-01-15T10:30:00Z"
+        isFinanced:
+          type: boolean
+          default: false
+          example: true
+        financeAmount:
+          type: number
+          format: float
+          example: 50000.00
+        make:
+          type: string
+          example: Volvo
+        model:
+          type: string
+          example: VNL 760
+        year:
+          type: integer
+          example: 2023
+        imgURL:
+          type: array
+          items:
+            type: string
+            format: uri
+          example: ["https://example.com/truck1.jpg", "https://example.com/truck2.jpg"]
+        chassisNo:
+          type: string
+          example: 4V4NC9EJ1EN123456
+        engineNo:
+          type: string
+          example: D13TC500123
+        desc:
+          type: string
+          example: Heavy-duty long-haul truck with sleeper cab
+
+    # Fuel Expense Schema
+    FuelExpense:
+      type: object
+      required:
+        - truckId
+        - addedBy
+        - date
+        - currentKM
+        - litres
+        - cost
+      properties:
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439013
+        truckId:
+          type: string
+          description: ID of the truck
+          example: 507f1f77bcf86cd799439012
+        addedBy:
+          type: string
+          description: User ID who added this expense
+          example: 507f1f77bcf86cd799439011
+        date:
+          type: string
+          format: date
+          example: "2025-11-06"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-11-06T10:30:00Z"
+        currentKM:
+          type: number
+          format: float
+          description: Current kilometers/mileage
+          example: 125678.5
+        litres:
+          type: number
+          format: float
+          description: Amount of fuel filled in litres
+          example: 150.5
+        cost:
+          type: number
+          format: float
+          description: Total cost of fuel
+          example: 225.75
+        note:
+          type: string
+          example: Regular fill at station near highway
+
+    # DEF Expense Schema
+    DefExpense:
+      type: object
+      required:
+        - truckId
+        - addedBy
+        - date
+        - cost
+      properties:
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439014
+        truckId:
+          type: string
+          example: 507f1f77bcf86cd799439012
+        addedBy:
+          type: string
+          example: 507f1f77bcf86cd799439011
+        date:
+          type: string
+          format: date
+          example: "2025-11-06"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-11-06T10:30:00Z"
+        litres:
+          type: number
+          format: float
+          description: Amount of DEF filled in litres
+          example: 20.5
+        cost:
+          type: number
+          format: float
+          example: 45.50
+        note:
+          type: string
+          example: DEF refill at truck stop
+
+    # Other Expense Schema
+    OtherExpense:
+      type: object
+      required:
+        - truckId
+        - addedBy
+        - date
+        - cost
+      properties:
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439015
+        truckId:
+          type: string
+          example: 507f1f77bcf86cd799439012
+        addedBy:
+          type: string
+          example: 507f1f77bcf86cd799439011
+        date:
+          type: string
+          format: date
+          example: "2025-11-06"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-11-06T10:30:00Z"
+        category:
+          type: string
+          example: Maintenance
+        cost:
+          type: number
+          format: float
+          example: 350.00
+        note:
+          type: string
+          example: Oil change and tire rotation
+
+    # Loan Calculation Schema
+    LoanCalculation:
+      type: object
+      required:
+        - truckId
+        - addedBy
+        - date
+        - cost
+      properties:
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439016
+        truckId:
+          type: string
+          example: 507f1f77bcf86cd799439012
+        addedBy:
+          type: string
+          example: 507f1f77bcf86cd799439011
+        date:
+          type: string
+          format: date
+          example: "2025-11-06"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-11-06T10:30:00Z"
+        cost:
+          type: number
+          format: float
+          description: Loan payment amount
+          example: 1500.00
+        additionalCharges:
+          type: number
+          format: float
+          example: 50.00
+        note:
+          type: string
+          example: Monthly loan payment
 
 security:
   - bearerAuth: []
 
 tags:
-  - name: Health
   - name: Auth
+    description: User authentication and authorization
   - name: User Profile
+    description: User profile management
   - name: Admin
+    description: Administrative operations
   - name: Truck Management
+    description: Truck CRUD operations
   - name: Loan Calculations
+    description: Loan payment tracking and calculations
   - name: Fuel Expenses
+    description: Fuel expense tracking
   - name: DEF Expenses
+    description: DEF (Diesel Exhaust Fluid) expense tracking
   - name: Other Expenses
+    description: Miscellaneous expense tracking
   - name: Total Expenses
+    description: Aggregated expense analytics
   - name: Metadata
+    description: Analytics and metadata endpoints
 
 paths:
 
-  ###########################################
-  # HEALTH
-  ###########################################
-  /health/checkHealth:
-    get:
-      tags: [Health]
-      summary: Check API health status
-      responses:
-        200:
-          description: Service is up and running
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status: { type: string, example: OK }
-                  message: { type: string, example: Service is running }
-                  timestamp: { type: string, format: date-time, example: 2025-11-05T12:00:00Z }
 
   ###########################################
   # AUTH
@@ -104,36 +349,73 @@ paths:
   /auth/signUp:
     post:
       tags: [Auth]
-      summary: Register a new user
+      summary: Register a new user (Note - Currently uses Google OAuth)
+      description: Creates a new user account in the system
+      security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [username, password, name]
+              required: [googleId, email]
               properties:
-                username: { type: string, example: johndoe }
-                password: { type: string, example: strongpassword123 }
-                name: { type: string, example: John Doe }
+                googleId:
+                  type: string
+                  example: "103547991597142817347"
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                name:
+                  type: string
+                  example: John Doe
       responses:
-        201: { description: User registered successfully }
-        400: { $ref: '#/components/schemas/ErrorResponse' }
+        201:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/User'
+        400:
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/logIn:
     post:
       tags: [Auth]
       summary: User login
+      description: Authenticates a user and returns a JWT token
+      security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [username, password]
+              required: [email]
               properties:
-                username: { type: string }
-                password: { type: string }
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                googleId:
+                  type: string
+                  example: "103547991597142817347"
       responses:
         200:
           description: Login successful
@@ -142,42 +424,101 @@ paths:
               schema:
                 type: object
                 properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Login successful
                   token:
                     type: string
-                    example: eyJhbGciOiJIUzI1Ni...
-        401: { description: Invalid credentials }
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    $ref: '#/components/schemas/User'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/logOut:
     post:
       tags: [Auth]
       summary: Logout user
-      security: [{ bearerAuth: [] }]
+      description: Invalidates the user's session (token should be discarded client-side)
       responses:
-        200: { description: Logged out successfully }
+        200:
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
 
   /auth/whoami:
     post:
       tags: [Auth]
-      summary: Validate user token and return user identity
-      security: [{ bearerAuth: [] }]
+      summary: Validate token and get current user
+      description: Validates the JWT token and returns the authenticated user's information
       responses:
-        200: { description: Token valid, returns user info }
-        401: { description: Token invalid or expired }
+        200:
+          description: Token valid, returns user info
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/User'
+        401:
+          description: Token invalid or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/signUpWithGoogle:
     post:
       tags: [Auth]
-      summary: Sign up or login via Google
+      summary: Sign up or login via Google OAuth
+      description: Authenticates or registers a user using Google OAuth token
+      security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [token]
               properties:
-                token: { type: string, description: Google ID Token }
+                token:
+                  type: string
+                  description: Google ID Token from OAuth flow
+                  example: eyJhbGciOiJSUzI1NiIsImtpZCI6IjU5N...
       responses:
-        200: { description: Google user authenticated }
+        200:
+          description: Google user authenticated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    $ref: '#/components/schemas/User'
+        400:
+          description: Invalid Google token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   ###########################################
   # USER PROFILE
@@ -185,22 +526,26 @@ paths:
   /users/getMyProfile:
     get:
       tags: [User Profile]
-      summary: Get the current user's profile
-      security: [{ bearerAuth: [] }]
+      summary: Get current user's profile
+      description: Retrieves the authenticated user's profile information
       responses:
         200:
-          description: User profile details
+          description: User profile retrieved successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  userId: { type: string, example: U67890 }
-                  name: { type: string, example: John Doe }
-                  email: { type: string, example: john@example.com }
-                  isAdmin: { type: boolean, example: false }
-                  isSubscribed: { type: boolean, example: true }
-        401: { description: Unauthorized }
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/User'
+        401:
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   ###########################################
   # ADMIN
@@ -208,37 +553,86 @@ paths:
   /admin/getAlluser:
     get:
       tags: [Admin]
-      summary: Retrieve all users (Admin only)
-      security: [{ bearerAuth: [] }]
+      summary: Get all users (Admin only)
+      description: Retrieves a list of all registered users in the system
       responses:
-        200: { description: List of users returned }
+        200:
+          description: List of users retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+        403:
+          description: Forbidden - admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /admin/getOneUserByUsername:
     get:
       tags: [Admin]
-      summary: Retrieve a user by username (Admin only)
-      security: [{ bearerAuth: [] }]
+      summary: Get user by username (Admin only)
+      description: Retrieves a specific user's information by their username
       parameters:
         - in: query
           name: username
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          description: The username/email to search for
+          example: user@example.com
       responses:
-        200: { description: User found }
-        404: { description: User not found }
+        200:
+          description: User found successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/User'
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /admin/deleteOneUserByUsername:
     get:
       tags: [Admin]
       summary: Delete user by username (Admin only)
-      security: [{ bearerAuth: [] }]
+      description: Deletes a user from the system
       parameters:
         - in: query
           name: username
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: user@example.com
       responses:
-        200: { description: User deleted }
+        200:
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   ###########################################
   # TRUCK MANAGEMENT
@@ -247,88 +641,236 @@ paths:
     post:
       tags: [Truck Management]
       summary: Add a new truck
-      security: [{ bearerAuth: [] }]
+      description: Creates a new truck entry in the system
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [registrationNumber, model, addedBy]
+              required: [registrationNo, addedBy]
               properties:
-                registrationNumber: { type: string, example: "TRK1234" }
-                model: { type: string, example: "Volvo VNL" }
-                addedBy: { type: string, description: "The User ID of the owner/creator" }
+                registrationNo:
+                  type: string
+                  example: TRK-1234-AB
+                addedBy:
+                  type: string
+                  description: User ID of the truck owner
+                  example: 507f1f77bcf86cd799439011
+                isFinanced:
+                  type: boolean
+                  default: false
+                  example: true
+                financeAmount:
+                  type: number
+                  format: float
+                  example: 50000.00
+                make:
+                  type: string
+                  example: Volvo
+                model:
+                  type: string
+                  example: VNL 760
+                year:
+                  type: integer
+                  example: 2023
+                imgURL:
+                  type: array
+                  items:
+                    type: string
+                  example: ["https://example.com/truck.jpg"]
+                chassisNo:
+                  type: string
+                  example: 4V4NC9EJ1EN123456
+                engineNo:
+                  type: string
+                  example: D13TC500123
+                desc:
+                  type: string
+                  example: Heavy-duty long-haul truck
       responses:
-        201: { description: Truck added successfully }
+        201:
+          description: Truck added successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Truck'
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /trucks/getAllTrucks:
     get:
       tags: [Truck Management]
-      summary: Get all trucks (Admin or All Users)
-      security: [{ bearerAuth: [] }]
+      summary: Get all trucks
+      description: Retrieves all trucks in the system (Admin) or user's trucks
       responses:
-        200: { description: List of all trucks }
+        200:
+          description: List of trucks retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Truck'
 
   /trucks/getTruckById/{id}:
     get:
       tags: [Truck Management]
       summary: Get truck by ID
-      security: [{ bearerAuth: [] }]
+      description: Retrieves detailed information about a specific truck
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          description: Truck ID
+          example: 507f1f77bcf86cd799439012
       responses:
-        200: { description: Truck details returned }
-        404: { description: Truck not found }
+        200:
+          description: Truck details retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Truck'
+        404:
+          description: Truck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /trucks/getAllTrucksByUser/{addedBy}:
     get:
       tags: [Truck Management]
-      summary: Get all trucks added by a specific user ID
-      security: [{ bearerAuth: [] }]
+      summary: Get all trucks by user ID
+      description: Retrieves all trucks added by a specific user
       parameters:
         - in: path
           name: addedBy
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          description: User ID
+          example: 507f1f77bcf86cd799439011
       responses:
-        200: { description: Trucks by user retrieved }
+        200:
+          description: Trucks retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Truck'
 
   /trucks/updateTruckById/{id}:
     put:
       tags: [Truck Management]
-      summary: Update truck details by ID
-      security: [{ bearerAuth: [] }]
+      summary: Update truck by ID
+      description: Updates an existing truck's information
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439012
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                model: { type: string, example: "Peterbilt 579" }
+                registrationNo:
+                  type: string
+                  example: TRK-1234-AB
+                isFinanced:
+                  type: boolean
+                  example: true
+                financeAmount:
+                  type: number
+                  example: 48000.00
+                make:
+                  type: string
+                  example: Volvo
+                model:
+                  type: string
+                  example: VNL 860
+                year:
+                  type: integer
+                  example: 2024
+                desc:
+                  type: string
+                  example: Updated description
       responses:
-        200: { description: Truck updated }
+        200:
+          description: Truck updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Truck'
+        404:
+          description: Truck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /trucks/deleteTruckById/{id}:
     delete:
       tags: [Truck Management]
       summary: Delete truck by ID
-      security: [{ bearerAuth: [] }]
+      description: Permanently deletes a truck from the system
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439012
       responses:
-        200: { description: Truck deleted }
+        200:
+          description: Truck deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        404:
+          description: Truck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   ###########################################
   # LOAN CALCULATIONS
@@ -336,73 +878,162 @@ paths:
   /calculateLoan/addLoanCalculation:
     post:
       tags: [Loan Calculations]
-      summary: Add a new loan calculation
-      security: [{ bearerAuth: [] }]
+      summary: Add a loan calculation/payment
+      description: Records a new loan payment or calculation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [truckId, addedBy, date, cost]
+              properties:
+                truckId:
+                  type: string
+                  example: 507f1f77bcf86cd799439012
+                addedBy:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                date:
+                  type: string
+                  format: date
+                  example: "2025-11-06"
+                cost:
+                  type: number
+                  format: float
+                  example: 1500.00
+                additionalCharges:
+                  type: number
+                  format: float
+                  example: 50.00
+                note:
+                  type: string
+                  example: Monthly loan payment
       responses:
-        201: { description: Loan calculation added }
+        201:
+          description: Loan calculation added successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/LoanCalculation'
 
   /calculateLoan/getAllLoanCalculationsByTruckId:
     get:
       tags: [Loan Calculations]
       summary: Get loan calculations by truck ID
-      security: [{ bearerAuth: [] }]
+      description: Retrieves all loan payments for a specific truck
       parameters:
         - in: query
           name: truckId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439012
       responses:
-        200: { description: Loan calculations retrieved }
+        200:
+          description: Loan calculations retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LoanCalculation'
 
   /calculateLoan/getAllLoanCalculationsByUserId:
     get:
       tags: [Loan Calculations]
       summary: Get all loan calculations by user ID
-      security: [{ bearerAuth: [] }]
+      description: Retrieves all loan payments made by a specific user
       parameters:
         - in: query
           name: userId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439011
       responses:
-        200: { description: Loan calculations for user retrieved }
+        200:
+          description: Loan calculations retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LoanCalculation'
 
   /calculateLoan/deleteLoanCalculationById/{id}:
     delete:
       tags: [Loan Calculations]
       summary: Delete loan calculation by ID
-      security: [{ bearerAuth: [] }]
+      description: Removes a loan payment record
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439016
       responses:
-        200: { description: Loan calculation deleted }
+        200:
+          description: Loan calculation deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
 
   /calculateLoan/downloadLoanCalculationExcel:
     get:
       tags: [Loan Calculations]
-      summary: Download loan calculation data as Excel for a specific query
-      security: [{ bearerAuth: [] }]
+      summary: Download loan calculations as Excel
+      description: Exports filtered loan calculation data to Excel format
+      parameters:
+        - in: query
+          name: truckId
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439012
+        - in: query
+          name: userId
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439011
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
+              schema:
+                type: string
+                format: binary
 
   /calculateLoan/downloadAllLoanCalculationExcel:
     get:
       tags: [Loan Calculations]
-      summary: Download all loan calculations as Excel (Admin/Global)
-      security: [{ bearerAuth: [] }]
+      summary: Download all loan calculations as Excel (Admin)
+      description: Exports all loan calculation data to Excel format
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
+              schema:
+                type: string
+                format: binary
 
   ###########################################
   # DEF EXPENSES
@@ -410,92 +1041,203 @@ paths:
   /defExpenses/addDefExpense:
     post:
       tags: [DEF Expenses]
-      summary: Add a new DEF expense
-      security: [{ bearerAuth: [] }]
+      summary: Add a DEF expense
+      description: Records a new DEF (Diesel Exhaust Fluid) expense
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/Expense' }
+            schema:
+              type: object
+              required: [truckId, addedBy, date, cost]
+              properties:
+                truckId:
+                  type: string
+                  example: 507f1f77bcf86cd799439012
+                addedBy:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                date:
+                  type: string
+                  format: date
+                  example: "2025-11-06"
+                litres:
+                  type: number
+                  format: float
+                  example: 20.5
+                cost:
+                  type: number
+                  format: float
+                  example: 45.50
+                note:
+                  type: string
+                  example: DEF refill at truck stop
       responses:
-        201: { description: DEF expense added }
+        201:
+          description: DEF expense added successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DefExpense'
 
   /defExpenses/getAllDefExpensesByTruckId:
     get:
       tags: [DEF Expenses]
-      summary: Get all DEF expenses by truck ID
-      security: [{ bearerAuth: [] }]
+      summary: Get DEF expenses by truck ID
+      description: Retrieves all DEF expenses for a specific truck
       parameters:
         - in: query
           name: truckId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439012
       responses:
-        200: { description: DEF expenses fetched }
+        200:
+          description: DEF expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/DefExpense'
 
   /defExpenses/getAllDefExpensesByUserId:
     get:
       tags: [DEF Expenses]
-      summary: Get all DEF expenses by user ID
-      security: [{ bearerAuth: [] }]
+      summary: Get DEF expenses by user ID
+      description: Retrieves all DEF expenses for a specific user
       parameters:
         - in: query
           name: userId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439011
       responses:
-        200: { description: DEF expenses fetched }
+        200:
+          description: DEF expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/DefExpense'
 
   /defExpenses/updateDefExpenseByTruckId/{id}:
     put:
       tags: [DEF Expenses]
-      summary: Update a DEF expense by ID
-      security: [{ bearerAuth: [] }]
+      summary: Update DEF expense by ID
+      description: Updates an existing DEF expense record
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439014
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                litres:
+                  type: number
+                  format: float
+                cost:
+                  type: number
+                  format: float
+                note:
+                  type: string
       responses:
-        200: { description: DEF expense updated }
+        200:
+          description: DEF expense updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DefExpense'
 
   /defExpenses/deleteDefExpenseById/{id}:
     delete:
       tags: [DEF Expenses]
-      summary: Delete a DEF expense by ID
-      security: [{ bearerAuth: [] }]
+      summary: Delete DEF expense by ID
+      description: Removes a DEF expense record
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439014
       responses:
-        200: { description: DEF expense deleted }
+        200:
+          description: DEF expense deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
 
   /defExpenses/downloadDefExpensesExcel:
     get:
       tags: [DEF Expenses]
-      summary: Download filtered DEF expenses as Excel
-      security: [{ bearerAuth: [] }]
+      summary: Download DEF expenses as Excel
+      description: Exports filtered DEF expense data to Excel format
+      parameters:
+        - in: query
+          name: truckId
+          schema:
+            type: string
+        - in: query
+          name: userId
+          schema:
+            type: string
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
+              schema:
+                type: string
+                format: binary
 
   /defExpenses/downloadAllDefExpensesExcel:
     get:
       tags: [DEF Expenses]
-      summary: Download all DEF expenses as Excel (Admin/Global)
-      security: [{ bearerAuth: [] }]
+      summary: Download all DEF expenses as Excel (Admin)
+      description: Exports all DEF expense data to Excel format
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
-
+              schema:
+                type: string
+                format: binary
 
   ###########################################
   # FUEL EXPENSES
@@ -503,93 +1245,210 @@ paths:
   /fuelExpenses/addFuelExpense:
     post:
       tags: [Fuel Expenses]
-      summary: Add a new fuel expense
-      security: [{ bearerAuth: [] }]
+      summary: Add a fuel expense
+      description: Records a new fuel expense with mileage tracking
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/Expense' }
-            # Consider adding fuel-specific fields like 'gallons', 'mileage'
+            schema:
+              type: object
+              required: [truckId, addedBy, date, currentKM, litres, cost]
+              properties:
+                truckId:
+                  type: string
+                  example: 507f1f77bcf86cd799439012
+                addedBy:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                date:
+                  type: string
+                  format: date
+                  example: "2025-11-06"
+                currentKM:
+                  type: number
+                  format: float
+                  example: 125678.5
+                litres:
+                  type: number
+                  format: float
+                  example: 150.5
+                cost:
+                  type: number
+                  format: float
+                  example: 225.75
+                note:
+                  type: string
+                  example: Regular fill at highway station
       responses:
-        201: { description: Fuel expense added }
+        201:
+          description: Fuel expense added successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FuelExpense'
 
   /fuelExpenses/getAllFuelExpensesByTruckId:
     get:
       tags: [Fuel Expenses]
-      summary: Get all fuel expenses by truck ID
-      security: [{ bearerAuth: [] }]
+      summary: Get fuel expenses by truck ID
+      description: Retrieves all fuel expenses for a specific truck
       parameters:
         - in: query
           name: truckId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439012
       responses:
-        200: { description: Fuel expenses fetched }
+        200:
+          description: Fuel expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/FuelExpense'
 
   /fuelExpenses/getAllFuelExpensesByUserId:
     get:
       tags: [Fuel Expenses]
-      summary: Get all fuel expenses by user ID
-      security: [{ bearerAuth: [] }]
+      summary: Get fuel expenses by user ID
+      description: Retrieves all fuel expenses for a specific user
       parameters:
         - in: query
           name: userId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439011
       responses:
-        200: { description: Fuel expenses fetched }
+        200:
+          description: Fuel expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/FuelExpense'
 
   /fuelExpenses/updateFuelExpenseByTruckId/{id}:
     put:
       tags: [Fuel Expenses]
-      summary: Update a fuel expense by ID
-      security: [{ bearerAuth: [] }]
+      summary: Update fuel expense by ID
+      description: Updates an existing fuel expense record
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439013
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                currentKM:
+                  type: number
+                  format: float
+                litres:
+                  type: number
+                  format: float
+                cost:
+                  type: number
+                  format: float
+                note:
+                  type: string
       responses:
-        200: { description: Fuel expense updated }
+        200:
+          description: Fuel expense updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/FuelExpense'
 
   /fuelExpenses/deleteFuelExpenseById/{id}:
     delete:
       tags: [Fuel Expenses]
-      summary: Delete a fuel expense by ID
-      security: [{ bearerAuth: [] }]
+      summary: Delete fuel expense by ID
+      description: Removes a fuel expense record
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439013
       responses:
-        200: { description: Fuel expense deleted }
+        200:
+          description: Fuel expense deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
 
   /fuelExpenses/downloadFuelExpensesExcel:
     get:
       tags: [Fuel Expenses]
-      summary: Download filtered fuel expenses as Excel
-      security: [{ bearerAuth: [] }]
+      summary: Download fuel expenses as Excel
+      description: Exports filtered fuel expense data to Excel format
+      parameters:
+        - in: query
+          name: truckId
+          schema:
+            type: string
+        - in: query
+          name: userId
+          schema:
+            type: string
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
+              schema:
+                type: string
+                format: binary
 
   /fuelExpenses/downloadAllFuelExpensesExcel:
     get:
       tags: [Fuel Expenses]
-      summary: Download all fuel expenses as Excel (Admin/Global)
-      security: [{ bearerAuth: [] }]
+      summary: Download all fuel expenses as Excel (Admin)
+      description: Exports all fuel expense data to Excel format
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
-
+              schema:
+                type: string
+                format: binary
 
   ###########################################
   # OTHER EXPENSES
@@ -597,91 +1456,201 @@ paths:
   /otherExpenses/addOtherExpense:
     post:
       tags: [Other Expenses]
-      summary: Add a new other expense
-      security: [{ bearerAuth: [] }]
+      summary: Add an other/miscellaneous expense
+      description: Records a miscellaneous expense not covered by other categories
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/Expense' }
+            schema:
+              type: object
+              required: [truckId, addedBy, date, cost]
+              properties:
+                truckId:
+                  type: string
+                  example: 507f1f77bcf86cd799439012
+                addedBy:
+                  type: string
+                  example: 507f1f77bcf86cd799439011
+                date:
+                  type: string
+                  format: date
+                  example: "2025-11-06"
+                category:
+                  type: string
+                  example: Maintenance
+                cost:
+                  type: number
+                  format: float
+                  example: 350.00
+                note:
+                  type: string
+                  example: Oil change and tire rotation
       responses:
-        201: { description: Other expense added }
+        201:
+          description: Other expense added successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/OtherExpense'
 
   /otherExpenses/getAllOtherExpensesByTruckId:
     get:
       tags: [Other Expenses]
-      summary: Get all other expenses by truck ID
-      security: [{ bearerAuth: [] }]
+      summary: Get other expenses by truck ID
+      description: Retrieves all miscellaneous expenses for a specific truck
       parameters:
         - in: query
           name: truckId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439012
       responses:
-        200: { description: Other expenses fetched }
+        200:
+          description: Other expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/OtherExpense'
 
   /otherExpenses/getAllOtherExpensesByUserId:
     get:
       tags: [Other Expenses]
-      summary: Get all other expenses by user ID
-      security: [{ bearerAuth: [] }]
+      summary: Get other expenses by user ID
+      description: Retrieves all miscellaneous expenses for a specific user
       parameters:
         - in: query
           name: userId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439011
       responses:
-        200: { description: Other expenses fetched }
+        200:
+          description: Other expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/OtherExpense'
 
   /otherExpenses/updateOtherExpenseByTruckId/{id}:
     put:
       tags: [Other Expenses]
-      summary: Update an other expense by ID
-      security: [{ bearerAuth: [] }]
+      summary: Update other expense by ID
+      description: Updates an existing miscellaneous expense record
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439015
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                category:
+                  type: string
+                cost:
+                  type: number
+                  format: float
+                note:
+                  type: string
       responses:
-        200: { description: Other expense updated }
+        200:
+          description: Other expense updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/OtherExpense'
 
   /otherExpenses/deleteOtherExpenseById/{id}:
     delete:
       tags: [Other Expenses]
-      summary: Delete an other expense by ID
-      security: [{ bearerAuth: [] }]
+      summary: Delete other expense by ID
+      description: Removes a miscellaneous expense record
       parameters:
         - in: path
           name: id
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439015
       responses:
-        200: { description: Other expense deleted }
+        200:
+          description: Other expense deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
 
   /otherExpenses/downloadOtherExpensesExcel:
     get:
       tags: [Other Expenses]
-      summary: Download filtered other expenses as Excel
-      security: [{ bearerAuth: [] }]
+      summary: Download other expenses as Excel
+      description: Exports filtered miscellaneous expense data to Excel format
+      parameters:
+        - in: query
+          name: truckId
+          schema:
+            type: string
+        - in: query
+          name: userId
+          schema:
+            type: string
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
+              schema:
+                type: string
+                format: binary
 
   /otherExpenses/downloadAllOtherExpensesExcel:
     get:
       tags: [Other Expenses]
-      summary: Download all other expenses as Excel (Admin/Global)
-      security: [{ bearerAuth: [] }]
+      summary: Download all other expenses as Excel (Admin)
+      description: Exports all miscellaneous expense data to Excel format
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
+              schema:
+                type: string
+                format: binary
 
   ###########################################
   # TOTAL EXPENSES
@@ -689,27 +1658,59 @@ paths:
   /totalExpenses/getAllTotalExpensesByUserId:
     get:
       tags: [Total Expenses]
-      summary: Get total expenses for a user
-      security: [{ bearerAuth: [] }]
+      summary: Get total expenses summary by user ID
+      description: Retrieves aggregated expense data for a specific user across all categories
       parameters:
         - in: query
           name: userId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439011
       responses:
-        200: { description: Total expenses retrieved }
+        200:
+          description: Total expenses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                          totalFuelExpenses:
+                            type: number
+                            format: float
+                          totalDefExpenses:
+                            type: number
+                            format: float
+                          totalOtherExpenses:
+                            type: number
+                            format: float
+                          totalLoanPayments:
+                            type: number
+                            format: float
+                          grandTotal:
+                            type: number
+                            format: float
 
   /totalExpenses/downloadAllTotalExpensesExcel:
     get:
       tags: [Total Expenses]
-      summary: Download all total expenses as Excel (Admin/Global)
-      security: [{ bearerAuth: [] }]
+      summary: Download all total expenses as Excel (Admin)
+      description: Exports aggregated expense data for all users to Excel format
       responses:
         200:
-          description: Excel file generated
+          description: Excel file generated successfully
           content:
             application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema: { type: string, format: binary }
+              schema:
+                type: string
+                format: binary
 
   ###########################################
   # METADATA
@@ -717,38 +1718,106 @@ paths:
   /metadata/getMetadataByTruckId:
     get:
       tags: [Metadata]
-      summary: Get analytical metadata by truck ID
-      security: [{ bearerAuth: [] }]
+      summary: Get analytics metadata by truck ID
+      description: Retrieves analytical metadata and statistics for a specific truck
       parameters:
         - in: query
           name: truckId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439012
       responses:
-        200: { description: Metadata fetched }
+        200:
+          description: Metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          truckId:
+                            type: string
+                          totalExpenses:
+                            type: number
+                          averageFuelConsumption:
+                            type: number
+                          totalMileage:
+                            type: number
+                          expenseBreakdown:
+                            type: object
 
   /metadata/getMetadataByUserId:
     get:
       tags: [Metadata]
-      summary: Get analytical metadata by user ID
-      security: [{ bearerAuth: [] }]
+      summary: Get analytics metadata by user ID
+      description: Retrieves analytical metadata and statistics for a specific user
       parameters:
         - in: query
           name: userId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439011
       responses:
-        200: { description: Metadata fetched }
+        200:
+          description: Metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                          totalTrucks:
+                            type: integer
+                          totalExpenses:
+                            type: number
+                          expenseBreakdown:
+                            type: object
 
   /metadata/getProfileMetadataByUserId:
     get:
       tags: [Metadata]
-      summary: Get profile-related metadata by user ID
-      security: [{ bearerAuth: [] }]
+      summary: Get profile metadata by user ID
+      description: Retrieves profile-related metadata and statistics for a specific user
       parameters:
         - in: query
           name: userId
           required: true
-          schema: { type: string }
+          schema:
+            type: string
+          example: 507f1f77bcf86cd799439011
       responses:
-        200: { description: Profile metadata retrieved }
+        200:
+          description: Profile metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                          accountAge:
+                            type: integer
+                            description: Days since account creation
+                          isSubscribed:
+                            type: boolean
+                          trucksCount:
+                            type: integer
+                          recentActivity:
+                            type: object
