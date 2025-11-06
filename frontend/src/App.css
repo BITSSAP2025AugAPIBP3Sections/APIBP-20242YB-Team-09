@@ -172,12 +172,16 @@
 /* --------------------------sidebar--------------------------------- */
 
 .sidebar-container {
-  width: 280px !important;
+  width: 250px !important;
   flex-shrink: 0 !important;
   background: #f6f6f6 !important;
-  padding-bottom: 20px;
+  padding: 20px 0;
   overflow-y: auto;              /* scroll content instead of shrinking */
   border-radius: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;   /* Makes bottom card stick to bottom */
 }
 
 .custom-sidebar-menu {
@@ -261,4 +265,71 @@
 
 .custom-sidebar-menu .ant-menu-item-group-list {
     padding-left: 0 !important;
+}
+
+
+/* --------------------------sidebar card--------------------------------- */
+
+/* Sidebar layout fixes */
+.sidebar-upgrade-card {
+    position: relative;
+    margin: 20px 10px 0 10px;
+    padding: 20px;
+    border-radius: 18px;
+    overflow: hidden;
+    color: #fff;
+    height: 180px;
+
+    /* Background image */
+    background-image: url('../public/contact.avif');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Dark overlay for readability */
+.sidebar-upgrade-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65); 
+    backdrop-filter: blur(1.5px);
+}
+
+/* Content wrapper */
+.upgrade-card-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+/* Title */
+.upgrade-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+/* Subtext */
+.upgrade-subtitle {
+    font-size: 13px;
+    line-height: 1.4;
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+/* CTA Button */
+.upgrade-btn {
+    background: #1a7f37;
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+.upgrade-btn:hover {
+    background: #166a2f;
 }
