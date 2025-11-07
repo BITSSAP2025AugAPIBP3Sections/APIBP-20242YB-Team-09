@@ -5,6 +5,9 @@ const app = require('../app');
 const debug = require('debug')('nalaso-express:server');
 const http = require('http');
 const { connectDB } = require('../database/connection');
+const { createApolloServer } = require('../graphql');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -66,18 +69,44 @@ app.set('port', port);
 // Create HTTP server.
 const server = http.createServer(app);
 
-// Connect to database
-connectDB().then(() => {
+// Connect to database and start GraphQL server
+connectDB().then(async () => {
 	try {
+		// Initialize Apollo Server
+		const apolloServer = await createApolloServer(server);
+
+		// Apply Apollo middleware to Express app using standalone method
+		app.use('/graphql',
+			cors(),
+			bodyParser.json(),
+			async (req, res) => {
+				try {
+					const result = await apolloServer.executeOperation({
+						query: req.body.query,
+						variables: req.body.variables,
+						operationName: req.body.operationName,
+					}, {
+						contextValue: { req },
+					});
+
+					res.status(200).json(result);
+				} catch (error) {
+					console.error('GraphQL execution error:', error);
+					res.status(500).json({ errors: [{ message: error.message }] });
+				}
+			}
+		);
+
 		// Listen on provided IP and port, on all network interfaces.
 		server.listen(port, '0.0.0.0', () => {
 			console.log(`Server connected to port:${port}`);
+			console.log(`GraphQL endpoint available at http://localhost:${port}/graphql`);
 		});
 	} catch (error) {
-		console.log('Cannot connect to the server');
+		console.log('Cannot connect to the server', error);
 	}
 }).catch(error => {
-	console.log("Invalid database connection...!");
+	console.log("Invalid database connection...!", error);
 });
 
 server.on('error', onError);
