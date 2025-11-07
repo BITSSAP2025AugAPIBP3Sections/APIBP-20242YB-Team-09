@@ -24,7 +24,7 @@ const SideBar = () => {
             children: [
                 { label: "Dashboard", key: "dashboard", icon: <HomeOutlined /> },
                 { label: "Trucks", key: "trucks", icon: <TruckOutlined /> },
-                { label: "Tasks", key: "tasks", icon: <CheckSquareOutlined /> },
+                { label: "Drivers", key: "drivers", icon: <TeamOutlined /> },
                 { label: "Calendar", key: "calendar", icon: <CalendarOutlined /> },
                 { label: "Analytics", key: "analytics", icon: <BarChartOutlined /> },
                 { label: "Team", key: "team", icon: <TeamOutlined /> }

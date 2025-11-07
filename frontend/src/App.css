@@ -281,12 +281,10 @@
 /* Sidebar layout fixes */
 .sidebar-contact-card {
     position: relative;
-    margin: 20px 10px 0 10px;
-    padding: 20px;
+    padding: 30px 10px;
     border-radius: 18px;
     overflow: hidden;
     color: #fff;
-    height: 180px;
 
     /* Background image */
     background-image: url('../public/contact.avif');
@@ -327,8 +325,7 @@
 /* CTA Button */
 .contact-btn {
     background: #1a7f37;
-    width: 100%;
-    padding: 10px 0;
+    padding: 10px 40px;
     border-radius: 20px;
     border: none;
     color: white;
