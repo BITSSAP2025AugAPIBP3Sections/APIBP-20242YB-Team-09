@@ -153,10 +153,9 @@ const DriverProfileWidget = () => {
       borderRadius: "12px",
       padding: "18px 22px",
       boxShadow: "0 2px 8px rgba(22,119,255,0.07)",
-      width: 540,
+      width: "100%",
       minWidth: 320,
-      maxWidth: "100%",
-      height: 400,
+      height: "100%",
       overflowY: "auto",
       display: "inline-block"
     }}>
