@@ -100,7 +100,7 @@ const SideBar = ({ isOpen = true, setIsOpen }) => {
             <div className="sidebar-top">
                 {/* Logo */}
                 <div className="d-flex gap-2 align-items-center mb-4">
-                    <img src="favicon.png" alt="Logo" style={{ width: 50, height: 50 }} />
+                    <img src="/favicon.png" alt="MMT" style={{ width: 50, height: 50 }} />
                     <div><b className="fs-8">Manage My Truck</b></div>
                 </div>
 

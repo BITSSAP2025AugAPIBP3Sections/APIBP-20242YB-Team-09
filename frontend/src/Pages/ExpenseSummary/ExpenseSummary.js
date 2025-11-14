@@ -9,7 +9,7 @@ import { DatePicker, Space } from "antd";
 // import moment from "moment";
 import dayjs from "dayjs";
 import ConfirmModal from "../../Components/ConfirmModal/ConfirmModal";
-import { ArrowRightIcon, PencilIcon, TrashIcon } from "@primer/octicons-react";
+import { ArrowRightIcon, DownloadIcon, PencilIcon, TrashIcon } from "@primer/octicons-react";
 import { UserContext } from "../../App";
 
 // dayjs.locale('en-gb');
@@ -454,7 +454,7 @@ const ExpenseSummary = () => {
     fuelExpenses: [
       {
         title: "Date",
-        width: 50,
+        width: 70,
         dataIndex: "date",
         key: "date",
         fixed: "left",
@@ -544,7 +544,7 @@ const ExpenseSummary = () => {
     defExpenses: [
       {
         title: "Date",
-        width: 50,
+        width: 70,
         dataIndex: "date",
         key: "date",
         fixed: "left",
@@ -629,7 +629,7 @@ const ExpenseSummary = () => {
     otherExpenses: [
       {
         title: "Date",
-        width: 50,
+        width: 70,
         dataIndex: "date",
         key: "date",
         fixed: "left",
@@ -704,7 +704,7 @@ const ExpenseSummary = () => {
     totalExpenses: [
       {
         title: "Date",
-        width: 50,
+        width: 70,
         dataIndex: "date",
         key: "date",
         fixed: "left",
@@ -737,9 +737,17 @@ const ExpenseSummary = () => {
   };
 
   return (
-    <>
+    <div className="h-100 p-4 rounded-4 d-flex flex-column gap-3" style={{ background: "#f6f6f6" }}>
+      <div className="d-flex flex-column">
+        <b style={{ fontSize: "26px" }}>{vehicleId ? `Expense Summary for ${vehicleId}` : "Expense Summary"}</b>
+        <span style={{ fontSize: "14px", color: "#939393" }}>
+          {vehicleId
+            ? `View and manage expenses for vehicle ${vehicleId}`
+            : `Track all expenses across your fleet`}
+        </span>
+      </div>
       <LoaderOverlay isVisible={contentLoader} />
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
         <div className="d-flex flex-column flex-md-row gap-3 align-items-center mb-3 mb-md-0">
           <input
             type="date"
@@ -783,39 +791,41 @@ const ExpenseSummary = () => {
         columns={tableColumns[catalog]}
         dataSource={expensesList}
         scroll={{
-          x: 1500,
+          x: 1000,
           y: 500,
         }}
       />
-      <hr></hr>
-      <div className="w-100 d-flex justify-content-center mt-5">
-        <Button
-          type="primary"
-          style={{ background: "green", marginBottom: 30 }}
-          icon={<FileExcelOutlined style={{ fontSize: 22 }} size={32} />}
-          size={"large"}
-          disabled={expensesList.length ? false : true}
-          onClick={handleReportDownload}
-        >
-          <b>Download Report</b>
-        </Button>
-      </div>
       {vehicleId && (
-        <FloatButton
-          shape="circle"
-          type="primary"
-          style={{
-            insetInlineEnd: "6%",
-            height: 80,
-            width: 80,
-            padding: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={callExpenseModal}
-          icon={<PlusOutlined style={{ fontSize: 20 }} />}
-        />
+        <>
+          <FloatButton
+            shape="circle"
+            type="default"
+            style={{
+              insetInlineEnd: "calc(6% + 100px)",
+              height: 80,
+              width: 80,
+              color: "white",
+            }}
+            onClick={handleReportDownload}
+            disabled={expensesList.length ? false : true}
+            icon={<DownloadIcon size={20} />}
+          />
+          <FloatButton
+            shape="circle"
+            type="primary"
+            style={{
+              insetInlineEnd: "6%",
+              height: 80,
+              width: 80,
+              padding: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onClick={callExpenseModal}
+            icon={<PlusOutlined style={{ fontSize: 20 }} />}
+          />
+        </>
       )}
       <ExpenseModal
         ref={expenseModalRef}
@@ -826,7 +836,7 @@ const ExpenseSummary = () => {
         apis={apis}
         onSuccess={refreshExpenses}
       />
-    </>
+    </div>
   );
 };
 

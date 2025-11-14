@@ -223,7 +223,7 @@
   .sidebar-container {
     position: fixed !important;
     top: 0 !important;
-    left: -250px !important; /* Hide by default */
+    left: -280px !important; /* Hide by default */
     height: 100vh !important;
     z-index: 1000 !important;
     transition: left 0.3s ease-in-out !important;
