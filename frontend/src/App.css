@@ -54,10 +54,27 @@
   gap: 20px;
 }
 
+.loan-grid-container {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(200px, 1fr)
+  );
+  gap: 20px;
+}
+
 
 @media (min-width: 768px) {
   /* For tablets and above */
   .dashboard-grid-container {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(220px, 1fr)
+    ); /* Adjust 220px based on your card's width */
+    gap: 20px; /* Slightly larger gap for medium screens */
+  }
+
+  .loan-grid-container {
     grid-template-columns: repeat(
       auto-fill,
       minmax(220px, 1fr)
@@ -70,7 +87,15 @@
   /* For laptops and above */
   .dashboard-grid-container {
     grid-template-columns: repeat(
-      5,
+      4,
+      1fr
+    ); /* Exactly 4 cards per row on laptop and larger screens */
+    gap: 20px; /* Larger gap for larger screens */
+  }
+
+  .loan-grid-container {
+    grid-template-columns: repeat(
+      4,
       1fr
     ); /* Exactly 4 cards per row on laptop and larger screens */
     gap: 20px; /* Larger gap for larger screens */
@@ -180,7 +205,7 @@
 /* --------------------------sidebar--------------------------------- */
 
 .sidebar-container {
-  width: 250px !important;
+  width: 260px !important;
   flex-shrink: 0 !important;
   background: #f6f6f6 !important;
   padding: 20px 0;

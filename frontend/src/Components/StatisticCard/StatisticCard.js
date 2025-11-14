@@ -1,6 +1,4 @@
 import { Card, Statistic } from 'antd'
-import { ArrowUpOutlined } from '@ant-design/icons';
-import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ArrowUpRightIcon } from '@primer/octicons-react';
 
@@ -9,15 +7,28 @@ const StatisticCard = (props) => {
   const nav = useNavigate()
 
   return (
-    <Card hoverable bordered={false} className={props.cardType === "primary" ? "primary rounded-4" : "rounded-3"} onClick={() => { props.route && nav(props.route) }}>
+    <Card hoverable bordered={false} className={props.cardType === "primary" ? "primary rounded-4" : "rounded-4"} onClick={() => { props.route && nav(props.route) }}>
       <div className='d-flex align-items-center justify-content-between'>
         <Statistic
           title={
             <div className='w-100 d-flex justify-content-between align-items-center'>
-              <div>{props.title}</div>
-              <div className='d-flex align-items-center justify-content-center bg-white' style={{ height: 30, width: 30, borderRadius: "100%" }}>
-                <ArrowUpRightIcon size={16} fill='#158141' />
-              </div>
+              <b className='d-flex gap-2'>
+                <span style={{ fontSize: 16, fontWeight: 500, color: props.cardType === 'primary' ? "#fff" : "#000" }}>
+                  {props.title}
+                </span>
+                {
+                  props.subtitle &&
+                  <div style={{ fontSize: 11, fontWeight: 500, color: props.cardType === 'primary' ? "white" : "#000", background: props.cardType === 'primary' ? "#fff" : "#E0F8E9", padding: "2px 6px", borderRadius: 4, width: "max-content" }}>
+                    {props.subtitle}
+                  </div>
+                }
+              </b>
+              {
+                props.route &&
+                <div className='d-flex align-items-center justify-content-center' style={{ height: 30, width: 30, borderRadius: "100%", background: props.cardType === 'primary' ? "#fff" : "#158141" }}>
+                  <ArrowUpRightIcon size={16} fill={props.cardType === 'primary' ? "#158141" : "#fff"} />
+                </div>
+              }
             </div>
           }
           value={props.value}
@@ -35,7 +46,7 @@ const StatisticCard = (props) => {
             }
           }}
           valueStyle={{
-            color: '#fff',
+            color: props.cardType === "primary" ? '#fff' : '#000',
             fontWeight: 460,
             fontSize: 46
           }}

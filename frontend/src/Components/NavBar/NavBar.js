@@ -60,7 +60,7 @@ const NavBar = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <div>
-      {(loc.pathname.startsWith("/expenseSummary/") || loc.pathname.startsWith("/calculateLoan/")) ? (
+      {/* {(loc.pathname.startsWith("/expenseSummary/") || loc.pathname.startsWith("/calculateLoan/")) ? (
         <Space style={{ background: "#f6f6f6" }} className="p-4 w-100 rounded-3 d-flex justify-content-between">
           <Button
             type="dark"
@@ -82,7 +82,7 @@ const NavBar = ({ sidebarOpen, setSidebarOpen }) => {
             </b>
           </div>
         </Space>
-      ) : (
+      ) : ( */}
         <Space style={{ background: "#f6f6f6" }} className="p-4 w-100 rounded-4 d-flex justify-content-between">
           <div></div>
           <div className="d-flex gap-3">
@@ -132,7 +132,7 @@ const NavBar = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </Space>
-      )}
+      {/* )} */}
 
       <ProfileDrawer
         profileOpen={profileOpen}

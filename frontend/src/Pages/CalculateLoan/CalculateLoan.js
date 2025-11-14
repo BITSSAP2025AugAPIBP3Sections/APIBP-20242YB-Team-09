@@ -6,7 +6,7 @@ import { UserContext } from "../../App";
 import { Axios } from "../../Config/Axios/Axios";
 import { PlusOutlined, FileExcelOutlined } from "@ant-design/icons";
 import LoaderOverlay from "../../Components/LoaderOverlay/LoaderOverlay";
-import { ArrowRightIcon } from "@primer/octicons-react";
+import { ArrowRightIcon, DownloadIcon } from "@primer/octicons-react";
 import ConfirmModal from "../../Components/ConfirmModal/ConfirmModal";
 import { Button, FloatButton, Table } from "antd";
 import CalculationsModal from "../../Components/CalculationsModal/CalculationsModal";
@@ -48,11 +48,11 @@ const CalculateLoan = () => {
       key: "additionalCharges",
     },
     {
-        title: "Notes",
-        width: 100,
-        dataIndex: "note",
-        key: "note",
-      },
+      title: "Notes",
+      width: 100,
+      dataIndex: "note",
+      key: "note",
+    },
     {
       title: "Action",
       key: "operation",
@@ -63,7 +63,7 @@ const CalculateLoan = () => {
           content="Are you sure you want to delete?"
           onOk={() => handleOk(record._id)}
           key={record._id}
-          onCancel={() => {}}
+          onCancel={() => { }}
         >
           <button
             type="button"
@@ -108,32 +108,32 @@ const CalculateLoan = () => {
 
   useEffect(() => {
     setContentLoader(true);
-      Axios.get(`/api/v1/app/calculateLoan/getAllLoanCalculationsByTruckId`, {
-        params: {
-          truckId: vehicleId,
-          selectedDates,
-        },
-        headers: {
-          authorization: `bearer ${localStorage.getItem('token')}`,
-        },
-      })
-        .then((res) => {
-          setCalculationsList(res.data.calculations);
-          setTotalCalculation(res.data.totalCalculation || 0);
-          setMetaData({
-            totalFinanceAmount: res.data.totalFinanceAmount,
-            recentPayment: res.data.recentPayment,
-            paymentLeft: res.data.paymentLeft,
-            totalAdditionalCharges: res.data.totalAdditionalCharges,
-          });
-          setContentLoader(false);
-        })
-        .catch((err) => {
-          setCalculationsList([]);
-          setTotalCalculation(0);
-          setIsError(true);
-          setContentLoader(false);
+    Axios.get(`/api/v1/app/calculateLoan/getAllLoanCalculationsByTruckId`, {
+      params: {
+        truckId: vehicleId,
+        selectedDates,
+      },
+      headers: {
+        authorization: `bearer ${localStorage.getItem('token')}`,
+      },
+    })
+      .then((res) => {
+        setCalculationsList(res.data.calculations);
+        setTotalCalculation(res.data.totalCalculation || 0);
+        setMetaData({
+          totalFinanceAmount: res.data.totalFinanceAmount,
+          recentPayment: res.data.recentPayment,
+          paymentLeft: res.data.paymentLeft,
+          totalAdditionalCharges: res.data.totalAdditionalCharges,
         });
+        setContentLoader(false);
+      })
+      .catch((err) => {
+        setCalculationsList([]);
+        setTotalCalculation(0);
+        setIsError(true);
+        setContentLoader(false);
+      });
   }, []);
 
   const callCalcucationModal = () => {
@@ -208,84 +208,62 @@ const CalculateLoan = () => {
   const refreshCalculations = () => {
     setContentLoader(true);
     Axios.get(`/api/v1/app/calculateLoan/getAllLoanCalculationsByTruckId`, {
-        params: {
-          truckId: vehicleId,
-          selectedDates,
-        },
-        headers: {
-          authorization: `bearer ${localStorage.getItem('token')}`,
-        },
-      })
-        .then((res) => {
-          setCalculationsList(res.data.calculations);
-          setTotalCalculation(res.data.totalCalculation || 0);
-          setMetaData({
-            totalFinanceAmount: res.data.totalFinanceAmount,
-            recentPayment: res.data.recentPayment,
-            paymentLeft: res.data.paymentLeft,
-            totalAdditionalCharges: res.data.totalAdditionalCharges,
-          });
-          setContentLoader(false);
-        })
-        .catch((err) => {
-          setCalculationsList([]);
-          setTotalCalculation(0);
-          setIsError(true);
-          setContentLoader(false);
+      params: {
+        truckId: vehicleId,
+        selectedDates,
+      },
+      headers: {
+        authorization: `bearer ${localStorage.getItem('token')}`,
+      },
+    })
+      .then((res) => {
+        setCalculationsList(res.data.calculations);
+        setTotalCalculation(res.data.totalCalculation || 0);
+        setMetaData({
+          totalFinanceAmount: res.data.totalFinanceAmount,
+          recentPayment: res.data.recentPayment,
+          paymentLeft: res.data.paymentLeft,
+          totalAdditionalCharges: res.data.totalAdditionalCharges,
         });
+        setContentLoader(false);
+      })
+      .catch((err) => {
+        setCalculationsList([]);
+        setTotalCalculation(0);
+        setIsError(true);
+        setContentLoader(false);
+      });
   };
 
   return (
-    <>
-      <div className="dashboard-grid-container mb-5 display-grid w-100 justify-content-center">
+    <div className="h-100 p-4 rounded-4 d-flex flex-column gap-3" style={{ background: "#f6f6f6" }}>
+      <div className="d-flex flex-column">
+        <b style={{ fontSize: "26px" }}>Loan Calculation</b>
+        <span style={{ fontSize: "14px", color: "#939393" }}>Overview of your truck's performance</span>
+      </div>
+      <div className="loan-grid-container mb-2 mt-3 display-grid w-100 justify-content-center">
         <StatisticCard
-          title={
-            <b>
-              <span style={{ fontSize: 18, color: "#f6f6f6" }}>
-                Total Finance Amount
-              </span>
-            </b>
-          }
+          cardType="primary"
+          title="Total Finance Amount"
           value={metaData?.totalFinanceAmount}
           thisMonth={0}
           route={""}
         />
         <StatisticCard
-          title={
-            <b>
-              <span style={{ fontSize: 18, color: "#f6f6f6" }}>
-                Total Additional Charges
-              </span>
-            </b>
-          }
+          title="Total Additional Charges"
           value={metaData?.totalAdditionalCharges}
           thisMonth={0}
           route={""}
         />
         <StatisticCard
-          title={
-            <b>
-              <span style={{ fontSize: 18, color: "#f6f6f6" }}>
-                Recent Payment{""}
-              </span>
-              <span style={{ fontSize: 10, fontStyle: "oblique" }}>
-                {" "}
-                {metaData.recentPayment?.date?.split("T")[0]}
-              </span>
-            </b>
-          }
+          title="Recent Payment"
+          subtitle={metaData.recentPayment?.date?.split("T")[0]}
           value={metaData.recentPayment?.cost}
           thisMonth={0}
           route={""}
         />
         <StatisticCard
-          title={
-            <b>
-              <span style={{ fontSize: 18, color: "#f6f6f6" }}>
-                Payment left
-              </span>
-            </b>
-          }
+          title="Payment left"
           value={metaData?.paymentLeft}
           thisMonth={0}
           route={""}
@@ -294,8 +272,8 @@ const CalculateLoan = () => {
       <hr></hr>
       <>
         <LoaderOverlay isVisible={contentLoader} />
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
-          <div className="d-flex flex-column flex-md-row gap-3 align-items-center mb-3 mb-md-0">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+          <div className="d-flex flex-column flex-md-row gap-3 align-items-center mb-md-0">
             <input
               type="date"
               className="form-control"
@@ -322,55 +300,45 @@ const CalculateLoan = () => {
               value={selectedDates[1]}
             />
           </div>
-
-          <div
-            className="d-flex border align-items-center p-2 ps-3 rounded gap-3 justify-content-between"
-            style={{ background: "#fafafa" }}
-          >
-            <b>Total Payment</b>
-            <div className="p-2 border bg-white rounded fw-bold text-danger">
-              {totalCalculation.toFixed(2)}
-            </div>
-          </div>
         </div>
         <hr></hr>
         <Table
           columns={tableColumns}
           dataSource={calculationsList}
           scroll={{
-            x: 1500,
+            x: 1000,
             y: 500,
           }}
         />
-        <hr></hr>
-        <div className="w-100 d-flex justify-content-center mt-5">
-          <Button
-            type="primary"
-            style={{ background: "green", marginBottom: 30 }}
-            icon={<FileExcelOutlined style={{ fontSize: 22 }} size={32} />}
-            size={"large"}
-            disabled={calculationsList.length ? false : true}
-            onClick={handleReportDownload}
-          >
-            <b>Download Report</b>
-          </Button>
-        </div>
         {vehicleId && (
-          <FloatButton
-            shape="circle"
-            type="primary"
-            style={{
-              insetInlineEnd: "6%",
-              height: 80,
-              width: 80,
-              padding: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onClick={callCalcucationModal}
-            icon={<PlusOutlined style={{ fontSize: 20 }} />}
-          />
+          <>
+            <FloatButton
+              shape="circle"
+              type="default"
+              style={{
+                insetInlineEnd: "calc(6% + 100px)",
+                height: 80,
+                width: 80,
+                color: "white",
+              }}
+              onClick={handleReportDownload}
+              disabled={calculationsList.length ? false : true}
+              icon={<DownloadIcon size={20} />}
+            />
+            <FloatButton
+              shape="circle"
+              type="success"
+              style={{
+                insetInlineEnd: "6%",
+                height: 80,
+                width: 80,
+                backgroundColor: "#158141",
+                color: "white",
+              }}
+              onClick={callCalcucationModal}
+              icon={<PlusOutlined style={{ fontSize: 20 }} />}
+            />
+          </>
         )}
         <CalculationsModal
           ref={calculationModalRef}
@@ -381,7 +349,7 @@ const CalculateLoan = () => {
           onSuccess={refreshCalculations}
         />
       </>
-    </>
+    </div>
   );
 };
 
