@@ -1,21 +1,34 @@
-import React, { useState } from "react";
-import { Menu } from "antd";
+import React, { useState, useEffect } from "react";
+import { Menu, Button } from "antd";
 import {
     HomeOutlined,
-    CheckSquareOutlined,
     CalendarOutlined,
     BarChartOutlined,
     TeamOutlined,
     SettingOutlined,
     QuestionCircleOutlined,
     LogoutOutlined,
-    TruckOutlined
+    TruckOutlined,
+    CloseOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-const SideBar = () => {
+const SideBar = ({ isOpen = true, setIsOpen }) => {
     const [current, setCurrent] = useState();
+    const [isMobile, setIsMobile] = useState(false);
     const nav = useNavigate();
+
+    // Check if screen is mobile size
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const items = [
         {
@@ -44,10 +57,45 @@ const SideBar = () => {
     const onClick = (e) => {
         nav(`/${e.key}`);
         setCurrent(e.key);
+
+        // Close sidebar on mobile after navigation
+        if (isMobile && setIsOpen) {
+            setIsOpen(false);
+        }
+    };
+
+    const handleCloseMobile = () => {
+        if (setIsOpen) {
+            setIsOpen(false);
+        }
     };
 
     return (
-        <div className="sidebar-container rounded-4 p-3 pt-4">
+        <>
+            {/* Mobile overlay - rendered outside sidebar */}
+            {isMobile && isOpen && (
+                <div
+                    className="sidebar-overlay"
+                    onClick={handleCloseMobile}
+                />
+            )}
+
+            <div className={`sidebar-container rounded-4 p-3 pt-4 ${isMobile && isOpen ? 'sidebar-mobile' : ''}`}>
+            {/* Mobile close button */}
+            {isMobile && (
+                <Button
+                    type="text"
+                    icon={<CloseOutlined />}
+                    onClick={handleCloseMobile}
+                    style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        zIndex: 1001,
+                        color: '#666'
+                    }}
+                />
+            )}
 
             <div className="sidebar-top">
                 {/* Logo */}
@@ -83,6 +131,7 @@ const SideBar = () => {
             </div>
 
         </div>
+        </>
     );
 };
 

@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Button, Space } from "antd";
 import { MenuFoldOutlined, LeftOutlined } from "@ant-design/icons";
-import { PersonIcon } from "@primer/octicons-react";
+
 import ProfileDrawer from "../ProfileDrawer/ProfileDrawer";
-import MenuDrawer from "../MenuDrawer/MenuDrawer";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Axios } from "../../Config/Axios/Axios";
 import { useContext } from "react";
 import { UserContext } from "../../App";
 
-const NavBar = () => {
-  const [navOpen, setNavOpen] = useState(false);
+const NavBar = ({ sidebarOpen, setSidebarOpen }) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [truckDetails, setTruckDetails] = useState({});
-  const [isError, setIsError] = useState(false);
-  const [expenses, setExpenses] = useState({
+  const [expenses] = useState({
     fuelExpenses: "Fuel Expenses",
     defExpenses: "Def Expenses",
     otherExpenses: "Other Expenses",
@@ -46,13 +43,13 @@ const NavBar = () => {
         })
         .catch((err) => {
           setTruckDetails({});
-          setIsError(true);
         });
     }
   }, [loc.pathname]);
 
-  const showNavDrawer = () => {
-    setNavOpen(true);
+  // Toggle mobile sidebar
+  const toggleMobileSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
   const showProfileDrawer = () => {
@@ -98,7 +95,7 @@ const NavBar = () => {
                 height: "40px",
                 width: "40px",
               }}
-              onClick={showNavDrawer}
+              onClick={toggleMobileSidebar}
             >
               <MenuFoldOutlined style={{ color: "black", fontSize: 18 }} />
             </Button>
@@ -137,7 +134,6 @@ const NavBar = () => {
         </Space>
       )}
 
-      <MenuDrawer navOpen={navOpen} setNavOpen={setNavOpen} />
       <ProfileDrawer
         profileOpen={profileOpen}
         setProfileOpen={setProfileOpen}

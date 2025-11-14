@@ -1,6 +1,5 @@
-import React, { useContext } from 'react'
+import React, { useState } from 'react'
 import { Navigate, Route, Routes as Switch } from 'react-router-dom'
-import { UserContext } from '../App'
 import Dashboard from '../Pages/Dashboard/Dashboard'
 import NavBar from '../Components/NavBar/NavBar'
 import ExpenseSummary from '../Pages/ExpenseSummary/ExpenseSummary'
@@ -10,15 +9,14 @@ import SideBar from '../Components/SideBar/SideBar'
 import Trucks from '../Pages/Trucks/Trucks'
 
 const Home = () => {
-
-    const { user } = useContext(UserContext)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
 
     return (
         <div style={{ height: "100vh", width: "100vw", padding: 16 }}>
             <div className='h-100 d-flex gap-3'>
-                <SideBar />
-                <div className='h-100 w-100 d-flex flex-column gap-3'>
-                    <NavBar />
+                <SideBar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+                <div className='h-100 w-100 d-flex flex-column gap-3 main-content'>
+                    <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
                     <Switch>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/trucks" element={<Trucks />} />

@@ -190,6 +190,48 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;   /* Makes bottom card stick to bottom */
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Mobile sidebar behavior */
+@media (max-width: 768px) {
+  .sidebar-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: -250px !important; /* Hide by default */
+    height: 100vh !important;
+    z-index: 1000 !important;
+    transition: left 0.3s ease-in-out !important;
+    border-radius: 0 20px 20px 0 !important;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Show sidebar when mobile class is present */
+  .sidebar-container.sidebar-mobile {
+    left: 0 !important;
+  }
+
+  /* Sidebar overlay for mobile */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999 !important;
+  }
+
+  /* Adjust main content when sidebar is hidden on mobile */
+  .main-content {
+    flex: 1 !important;
+    width: 100% !important;
+  }
+
+  /* Ensure proper spacing on mobile */
+  .main-content .container-fluid {
+    padding: 0 !important;
+  }
 }
 
 .custom-sidebar-menu {
