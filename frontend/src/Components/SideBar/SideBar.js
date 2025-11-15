@@ -103,7 +103,7 @@ const SideBar = ({ isOpen = true, setIsOpen }) => {
                 <div className="d-flex gap-2 align-items-center mb-4">
                     <div style={{ width: 50, height: 50, position: "relative" }}>
                         {logoLoading && (
-                            <div 
+                            <div
                                 style={{
                                     position: "absolute",
                                     top: 0,
@@ -117,25 +117,25 @@ const SideBar = ({ isOpen = true, setIsOpen }) => {
                                     borderRadius: "8px"
                                 }}
                             >
-                                <div style={{ 
-                                    width: "16px", 
-                                    height: "16px", 
-                                    border: "2px solid #ccc", 
-                                    borderTop: "2px solid #007bff", 
-                                    borderRadius: "50%", 
-                                    animation: "spin 1s linear infinite" 
+                                <div style={{
+                                    width: "16px",
+                                    height: "16px",
+                                    border: "2px solid #ccc",
+                                    borderTop: "2px solid #007bff",
+                                    borderRadius: "50%",
+                                    animation: "spin 1s linear infinite"
                                 }}></div>
                             </div>
                         )}
-                        <img 
-                            src="/favicon.png" 
+                        <img
+                            src="/favicon.png"
                             alt=""
-                            style={{ 
-                                width: 50, 
+                            style={{
+                                width: 50,
                                 height: 50,
                                 opacity: logoLoading ? 0 : 1,
                                 transition: "opacity 0.3s ease"
-                            }} 
+                            }}
                             onLoad={() => setLogoLoading(false)}
                             onError={() => setLogoLoading(false)}
                         />

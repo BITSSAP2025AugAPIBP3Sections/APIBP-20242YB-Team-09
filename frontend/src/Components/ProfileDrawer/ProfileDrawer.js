@@ -112,7 +112,7 @@ const ProfileDrawer = ({ profileOpen, setProfileOpen }) => {
         <div className="card-body text-center">
           <div className="mt-3 mb-4" style={{ position: "relative", display: "inline-block" }}>
             {profileImageLoading && (
-              <div 
+              <div
                 style={{
                   position: "absolute",
                   top: 0,
@@ -126,13 +126,13 @@ const ProfileDrawer = ({ profileOpen, setProfileOpen }) => {
                   borderRadius: "50%"
                 }}
               >
-                <div style={{ 
-                  width: "20px", 
-                  height: "20px", 
-                  border: "2px solid #ccc", 
-                  borderTop: "2px solid #007bff", 
-                  borderRadius: "50%", 
-                  animation: "spin 1s linear infinite" 
+                <div style={{
+                  width: "20px",
+                  height: "20px",
+                  border: "2px solid #ccc",
+                  borderTop: "2px solid #007bff",
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite"
                 }}></div>
               </div>
             )}
@@ -144,7 +144,7 @@ const ProfileDrawer = ({ profileOpen, setProfileOpen }) => {
                   : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
               }
               className="rounded-circle img-fluid"
-              style={{ 
+              style={{
                 width: "100px",
                 opacity: profileImageLoading ? 0 : 1,
                 transition: "opacity 0.3s ease"
