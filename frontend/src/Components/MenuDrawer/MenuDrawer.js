@@ -15,6 +15,7 @@ import {
 
 const MenuDrawer = ({ navOpen, setNavOpen }) => {
   const [current, setCurrent] = useState();
+  const [logoLoading, setLogoLoading] = useState(true);
   const nav = useNavigate();
 
   const onNavClose = () => {
@@ -65,7 +66,45 @@ const MenuDrawer = ({ navOpen, setNavOpen }) => {
         <div className="sidebar-top">
           {/* Logo */}
           <div className="d-flex gap-2 align-items-center mb-4" style={{ paddingLeft: "20px", paddingRight: "20px" }}>
-            <img src="/favicon.png" alt="Logo" style={{ width: 50, height: 50 }} />
+            <div style={{ width: 50, height: 50, position: "relative" }}>
+              {logoLoading && (
+                <div 
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#f0f0f0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "8px"
+                  }}
+                >
+                  <div style={{ 
+                    width: "16px", 
+                    height: "16px", 
+                    border: "2px solid #ccc", 
+                    borderTop: "2px solid #007bff", 
+                    borderRadius: "50%", 
+                    animation: "spin 1s linear infinite" 
+                  }}></div>
+                </div>
+              )}
+              <img 
+                src="/favicon.png" 
+                alt=""
+                style={{ 
+                  width: 50, 
+                  height: 50,
+                  opacity: logoLoading ? 0 : 1,
+                  transition: "opacity 0.3s ease"
+                }} 
+                onLoad={() => setLogoLoading(false)}
+                onError={() => setLogoLoading(false)}
+              />
+            </div>
             <div><b className="fs-8">Manage My Truck</b></div>
           </div>
 

@@ -11,6 +11,8 @@ import { UserContext } from "../../App";
 const NavBar = ({ sidebarOpen, setSidebarOpen }) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [truckDetails, setTruckDetails] = useState({});
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
   const [expenses] = useState({
     fuelExpenses: "Fuel Expenses",
     defExpenses: "Def Expenses",
@@ -46,6 +48,12 @@ const NavBar = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [loc.pathname]);
+
+  // Reset image loading state when user changes
+  useEffect(() => {
+    setImageLoading(true);
+    setImageError(false);
+  }, [user?.picture]);
 
   // Toggle mobile sidebar
   const toggleMobileSidebar = () => {
@@ -108,9 +116,36 @@ const NavBar = ({ sidebarOpen, setSidebarOpen }) => {
                   borderRadius: "100%",
                   height: "40px",
                   width: "40px",
+                  position: "relative",
+                  overflow: "hidden"
                 }}
                 onClick={showProfileDrawer}
               >
+                {imageLoading && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "#f0f0f0",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%"
+                    }}
+                  >
+                    <div style={{
+                      width: "12px",
+                      height: "12px",
+                      border: "2px solid #ccc",
+                      borderTop: "2px solid #007bff",
+                      borderRadius: "50%",
+                      animation: "spin 1s linear infinite"
+                    }}></div>
+                  </div>
+                )}
                 <img
                   src={
                     user?.picture
@@ -121,8 +156,15 @@ const NavBar = ({ sidebarOpen, setSidebarOpen }) => {
                   style={{
                     height: "40px",
                     width: "40px",
+                    opacity: imageLoading ? 0 : 1,
+                    transition: "opacity 0.3s ease"
                   }}
-                  alt="User"
+                  alt=""
+                  onLoad={() => setImageLoading(false)}
+                  onError={() => {
+                    setImageError(true);
+                    setImageLoading(false);
+                  }}
                 />
               </Button>
               <div className="ms-2 d-flex flex-column">

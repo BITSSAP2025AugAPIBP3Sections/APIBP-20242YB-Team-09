@@ -312,19 +312,22 @@ const CalculateLoan = () => {
         />
         {vehicleId && (
           <>
-            <FloatButton
-              shape="circle"
-              type="default"
-              style={{
-                insetInlineEnd: "calc(6% + 100px)",
-                height: 80,
-                width: 80,
-                color: "white",
-              }}
-              onClick={handleReportDownload}
-              disabled={calculationsList.length ? false : true}
-              icon={<DownloadIcon size={20} />}
-            />
+            {
+              calculationsList.length &&
+              <FloatButton
+                shape="circle"
+                type="default"
+                style={{
+                  insetInlineEnd: "calc(6% + 100px)",
+                  height: 80,
+                  width: 80,
+                  color: "white",
+                }}
+                onClick={handleReportDownload}
+                disabled={calculationsList.length ? false : true}
+                icon={<DownloadIcon size={20} />}
+              />
+            }
             <FloatButton
               shape="circle"
               type="success"

@@ -24,6 +24,7 @@ const ProfileDrawer = ({ profileOpen, setProfileOpen }) => {
   const [metadata, setMetadata] = useState({});
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [profileImageLoading, setProfileImageLoading] = useState(true);
 
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
@@ -33,6 +34,11 @@ const ProfileDrawer = ({ profileOpen, setProfileOpen }) => {
     console.log("ProfileDrawer - User data:", user);
     console.log("ProfileDrawer - User picture:", user?.picture);
   }, [user]);
+
+  // Reset profile image loading state when user changes
+  useEffect(() => {
+    setProfileImageLoading(true);
+  }, [user?.picture]);
 
   useEffect(() => {
     // const userCred = jwtDecode(localStorage.getItem("token"));
@@ -104,7 +110,32 @@ const ProfileDrawer = ({ profileOpen, setProfileOpen }) => {
     >
       <div className="card" style={{ borderRadius: "6px" }}>
         <div className="card-body text-center">
-          <div className="mt-3 mb-4">
+          <div className="mt-3 mb-4" style={{ position: "relative", display: "inline-block" }}>
+            {profileImageLoading && (
+              <div 
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100px",
+                  height: "100px",
+                  backgroundColor: "#f0f0f0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "50%"
+                }}
+              >
+                <div style={{ 
+                  width: "20px", 
+                  height: "20px", 
+                  border: "2px solid #ccc", 
+                  borderTop: "2px solid #007bff", 
+                  borderRadius: "50%", 
+                  animation: "spin 1s linear infinite" 
+                }}></div>
+              </div>
+            )}
             <img
               key={user?.picture ? `user-${user.picture}-${Date.now()}` : 'default-avatar'}
               src={
@@ -113,14 +144,22 @@ const ProfileDrawer = ({ profileOpen, setProfileOpen }) => {
                   : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
               }
               className="rounded-circle img-fluid"
-              style={{ width: "100px" }}
-              alt="User"
-              onLoad={() => console.log("Image loaded successfully:", user?.picture)}
+              style={{ 
+                width: "100px",
+                opacity: profileImageLoading ? 0 : 1,
+                transition: "opacity 0.3s ease"
+              }}
+              alt=""
+              onLoad={() => {
+                console.log("Image loaded successfully:", user?.picture);
+                setProfileImageLoading(false);
+              }}
               onError={(e) => {
                 console.log("Image failed to load:", user?.picture);
                 if (e.target.src !== "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp") {
                   e.target.src = "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp";
                 }
+                setProfileImageLoading(false);
               }}
             />
           </div>
